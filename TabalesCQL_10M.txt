@@ -1,0 +1,36 @@
+CREATE KEYSPACE my_keyspace
+WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
+CREATE TABLE my_keyspace.games (
+    app_id INT PRIMARY KEY,
+    title TEXT,
+    date_release DATE,
+    win BOOLEAN,
+    mac BOOLEAN,
+    linux BOOLEAN,
+    rating TEXT,
+    positive_ratio INT,
+    user_reviews INT,
+    price_final DECIMAL,
+    price_original DECIMAL,
+    discount INT,
+    steam_deck BOOLEAN
+);
+
+CREATE TABLE my_keyspace.recommendations (
+    app_id INT,
+    helpful INT,
+    funny INT,
+    date DATE,
+    is_recommended BOOLEAN,
+    hours DECIMAL,
+    user_id INT,
+    review_id INT,
+    PRIMARY KEY (app_id, review_id)
+);
+
+CREATE TABLE my_keyspace.users (
+    user_id INT PRIMARY KEY,
+    products INT,
+    reviews INT
+);
