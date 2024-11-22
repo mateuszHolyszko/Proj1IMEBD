@@ -1,0 +1,70 @@
+EXPLAIN ANALYZE SELECT * FROM games WHERE win = TRUE AND mac = TRUE;
+EXPLAIN ANALYZE SELECT * FROM recommendations WHERE hours > 100;
+EXPLAIN ANALYZE SELECT * FROM users WHERE reviews > 5;
+
+GRUPOWANIE:==================
+-Policz liczbę gier według kategorii ocen:
+EXPLAIN ANALYZE SELECT rating, COUNT(*) AS game_count 
+FROM games 
+GROUP BY rating;
+
+-Uzyskaj średnią liczbę godzin spędzonych na grze w każdą grę (według app_id):
+EXPLAIN ANALYZE SELECT app_id, AVG(hours) AS avg_hours 
+FROM recommendations 
+GROUP BY app_id;
+
+-Uzyskaj całkowitą liczbę produktów posiadanych przez użytkowników, którzy napisali więcej niż 1 recenzję:
+EXPLAIN ANALYZE SELECT user_id, SUM(products) AS total_products 
+FROM users 
+WHERE reviews > 1 
+GROUP BY user_id;
+
+JOINY:==================
+- Wypisz wszystkie gry z tabeli rekomendacji wraz ze średnią liczbą godzin spędzonych na ich graniu:
+EXPLAIN ANALYZE SELECT g.title, AVG(r.hours) AS avg_hours
+FROM games g
+JOIN recommendations r ON g.app_id = r.app_id
+GROUP BY g.title;
+
+-Uzyskaj dane użytkowników wraz z liczbą recenzji, które napisali na podstawie rekomendacji:
+EXPLAIN ANALYZE SELECT u.user_id, u.products, COUNT(r.review_id) AS review_count
+FROM users u
+JOIN recommendations r ON u.user_id = r.user_id
+GROUP BY u.user_id, u.products;
+
+-Znajdź wszystkie gry polecane przez użytkowników posiadających ponad 10 produktów:
+EXPLAIN ANALYZE SELECT g.title, r.user_id
+FROM games g
+JOIN recommendations r ON g.app_id = r.app_id
+JOIN users u ON r.user_id = u.user_id
+WHERE u.products > 10 AND r.is_recommended = TRUE;
+
+PODZAPYTANIA:==================
+-Otrzymaj gry, których średnia ocen pozytywnych wynosi powyżej 80%:
+EXPLAIN ANALYZE SELECT title 
+FROM games 
+WHERE positive_ratio > (
+    SELECT AVG(positive_ratio) FROM games
+);
+
+-Znajdź użytkowników, którzy wystawili ocenę grze „Bardzo pozytywna”:
+EXPLAIN ANALYZE SELECT DISTINCT user_id 
+FROM recommendations 
+WHERE app_id IN (
+    SELECT app_id 
+    FROM games 
+    WHERE rating = 'Very Positive'
+);
+
+-Wyświetl wszystkie gry z recenzjami użytkowników, którzy posiadają ponad 100 produktów:
+EXPLAIN ANALYZE SELECT title 
+FROM games 
+WHERE app_id IN (
+    SELECT app_id 
+    FROM recommendations 
+    WHERE user_id IN (
+        SELECT user_id 
+        FROM users 
+        WHERE products > 100
+    )
+);

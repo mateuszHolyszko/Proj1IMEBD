@@ -1,0 +1,41 @@
+CREATE INDEX ON my_keyspace.bs (amount);
+SELECT * FROM my_keyspace.bs WHERE amount > 50 ALLOW FILTERING;
+??? alternatywa z odpowiednią strukturą
+
+CREATE INDEX ON my_keyspace.bsNET (typeTrans);
+SELECT * FROM my_keyspace.bsNET WHERE typeTrans = 'es_transportation';
+
+CREATE INDEX ON my_keyspace.bs (fraud);
+SELECT COUNT(*) FROM my_keyspace.bs WHERE fraud = true; // dsnt work
+
+
+DO GRUPOWANIA i JOIN dołącz czas obliczenia przez skrypt
+GRUPOWANIE:==================
+PRE AGGREGATED
+-- Count transactions per customer in bs.csv
+SELECT customer, transaction_count 
+FROM transaction_count;
+
+-- Find the total amount spent per category
+SELECT category, total_spent
+FROM total_spent_per_category;
+
+-- Find the average transaction amount for each gender
+SELECT gender, average_amount
+FROM average_amount_per_gender;
+
+JOINY:==================
+PRE AGGREGATED
+-- Join bs and bsNET on customer ID to get detailed transaction and network data
+10GB file
+
+-- Find all transactions where the customer and merchant zip codes do not match
+SELECT customer, merchant, zipcodeOri, zipMerchant
+FROM zip_mismatch;
+
+-- Count the total amount of money per customer from bs.csv and their network weight from bsNET.csv
+SELECT customer, total_spent, total_weight
+FROM total_spent_and_weight;
+
+PODZAPYTANIA:==================
+??????????????????

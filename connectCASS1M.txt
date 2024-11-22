@@ -1,0 +1,6 @@
+docker exec -it cassandra1M cqlsh
+USE my_keyspace;
+
+with open port for script:
+docker run -p 9042:9042 --name cassandra1M -d cassandra
+

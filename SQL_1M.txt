@@ -1,0 +1,56 @@
+EXPLAIN ANALYZE SELECT * FROM bs WHERE amount > 50;
+EXPLAIN ANALYZE SELECT * FROM bsNET WHERE typeTrans = 'es_transportation';
+EXPLAIN ANALYZE SELECT COUNT(*) FROM bs WHERE fraud = true;
+
+GRUPOWANIE:==================
+-- Count transactions per customer in bs.csv
+EXPLAIN ANALYZE SELECT customer, COUNT(*) AS transaction_count 
+FROM bs 
+GROUP BY customer;
+
+-- Find the total amount spent per category
+EXPLAIN ANALYZE SELECT category, SUM(amount) AS total_spent 
+FROM bs 
+GROUP BY category;
+
+-- Find the average transaction amount for each gender
+EXPLAIN ANALYZE SELECT gender, AVG(amount) AS average_amount 
+FROM bs 
+GROUP BY gender;
+
+JOINY:==================
+-- Join bs and bsNET on customer ID to get detailed transaction and network data
+EXPLAIN ANALYZE SELECT bs.*, bsNET.Weight, bsNET.typeTrans 
+FROM bs 
+JOIN bsNET ON bs.customer = bsNET.Source;
+
+-- Find all transactions where the customer and merchant zip codes do not match
+EXPLAIN ANALYZE SELECT bs.customer, bs.merchant, bs.zipcodeOri, bs.zipMerchant 
+FROM bs 
+JOIN bsNET ON bs.customer = bsNET.Source 
+WHERE bs.zipcodeOri != bs.zipMerchant;
+
+-- Count the total amount of money per customer from bs.csv and their network weight from bsNET.csv
+EXPLAIN ANALYZE SELECT bs.customer, SUM(bs.amount) AS total_spent, SUM(bsNET.Weight) AS total_weight 
+FROM bs 
+JOIN bsNET ON bs.customer = bsNET.Source 
+GROUP BY bs.customer;
+
+PODZAPYTANIA:==================
+-- Get customers with total transaction amounts over $100
+EXPLAIN ANALYZE SELECT customer 
+FROM bs 
+GROUP BY customer 
+HAVING SUM(amount) > 100;
+
+-- Find the top merchant by total transaction amount
+EXPLAIN ANALYZE SELECT merchant 
+FROM bs 
+GROUP BY merchant 
+ORDER BY SUM(amount) DESC 
+LIMIT 1;
+
+-- Get the average transaction amount for customers with more than 5 transactions
+EXPLAIN ANALYZE SELECT AVG(amount) 
+FROM bs 
+WHERE customer IN (SELECT customer FROM bs GROUP BY customer HAVING COUNT(*) > 5);

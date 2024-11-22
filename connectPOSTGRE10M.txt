@@ -1,0 +1,2 @@
+docker exec -it postgres10M psql -U postgres -d 10mil
+\c my_database

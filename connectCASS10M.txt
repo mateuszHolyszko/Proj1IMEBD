@@ -1,0 +1,2 @@
+docker exec -it cassandra10M cqlsh
+USE my_keyspace;

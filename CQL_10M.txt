@@ -1,0 +1,30 @@
+SELECT * FROM my_keyspace.games WHERE win = true AND mac = true ALLOW FILTERING; 
+SELECT * FROM my_keyspace.recommendations WHERE hours > 100 ALLOW FILTERING;
+SELECT * FROM my_keyspace.users WHERE reviews > 5 ALLOW FILTERING;
+
+GRUPOWANIE:==================
+-Policz liczbę gier według kategorii ocen:
+SELECT * FROM my_keyspace.rating_game_count;
+
+-Uzyskaj średnią liczbę godzin spędzonych na grze w każdą grę (według app_id):
+SELECT * FROM my_keyspace.avg_hours_per_game;
+
+-Uzyskaj całkowitą liczbę produktów posiadanych przez użytkowników, którzy napisali więcej niż 1 recenzję:
+SELECT * FROM my_keyspace.total_products_by_users;
+
+JOINY:==================
+- Wypisz wszystkie gry z tabeli rekomendacji wraz ze średnią liczbą godzin spędzonych na ich graniu:
+SELECT * FROM my_keyspace.games_with_avg_hours;
+
+-Uzyskaj dane użytkowników wraz z liczbą recenzji, które napisali na podstawie rekomendacji:
+SELECT * FROM my_keyspace.users_with_review_count; //
+
+-Znajdź wszystkie gry polecane przez użytkowników posiadających ponad 10 produktów:
+SELECT * FROM my_keyspace.games_recommended_by_users;
+
+
+PODZAPYTANIA:==================
+
+-Znajdź użytkowników, którzy wystawili ocenę grze „Bardzo pozytywna”:
+
+-Wyświetl wszystkie gry z recenzjami użytkowników, którzy posiadają ponad 100 produktów:
